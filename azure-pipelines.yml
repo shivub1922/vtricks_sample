@@ -20,12 +20,15 @@ steps:
       javaHomeOption: 'JDKVersion'
       jdkVersionOption: '17'
       jdkArchitectureOption: 'x64'
-      publishJUnitResults: true  # Ensures results are captured
-      testResultsFiles: '**/target/surefire-reports/TEST-*.xml'
-      goals: 'clean test package'  # Runs tests before packaging
+      goals: 'clean test package'  # Ensure tests execute
+
+  - script: |
+      echo "Checking test reports directory..."
+      ls -R target/surefire-reports || echo "No reports found!"
+    displayName: 'Debug: Check Surefire Reports'
 
   - task: PublishTestResults@2
     inputs:
-      testResultsFiles: '**/target/surefire-reports/TEST-*.xml'
+      testResultsFiles: '$(System.DefaultWorkingDirectory)/**/target/surefire-reports/TEST-*.xml'
       searchFolder: '$(System.DefaultWorkingDirectory)'
       testRunTitle: 'Maven Unit Tests'
